@@ -1,0 +1,216 @@
+CREATE DATABASE Vehicle;
+
+CREATE TABLE Car(
+Id int PRIMARY KEY,
+Name VARCHAR(20),
+ManufacturerId int,
+Type VARCHAR(20),
+EngineId int,
+CONSTRAINT CarFkManufacturer FOREIGN KEY (ManufacturerId) references Manufacturer(Id),
+CONSTRAINT CarFkEngine FOREIGN KEY (EngineId) references Engine(Id),
+);
+SELECT * FROM Car;
+
+DROP TABLE Car;
+
+
+
+CREATE TABLE Manufacturer(
+Id int,
+Name VARCHAR(20),
+Country VARCHAR(20),
+CONSTRAINT PrimarniKljuc PRIMARY KEY(Id),
+);
+SELECT * FROM Manufacturer;
+
+DROP TABLE Manufacturer;
+
+
+
+CREATE TABLE Engine(
+Id int PRIMARY KEY,
+Name VARCHAR(10),
+Type VARCHAR(10),
+ManufacturerId int,
+CONSTRAINT EngineFkManufacturer FOREIGN KEY (ManufacturerId) references Manufacturer(Id),
+);
+SELECT * FROM Engine;
+
+DROP TABLE Engine;
+
+
+
+SELECT Car.Name, Engine.Type
+FROM Car, Engine
+WHERE Car.EngineID= Engine.Id
+ORDER BY Car.Name;
+
+SELECT Car.Name, Engine.Type, Manufacturer.Name as manufacturer
+FROM Car, Engine, Manufacturer
+WHERE Car.ManufacturerId=Manufacturer.Id and Car.EngineId=Engine.Id;
+
+SELECT Car.Name, Engine.Type, Manufacturer.Name as EngineManufacturer
+FROM Car, Engine, Manufacturer
+WHERE Engine.ManufacturerId=Manufacturer.Id and Car.EngineId=Engine.Id;
+
+CREATE VIEW VWMotors AS
+SELECT Manufacturer.Name as Manufacturer,Engine.Name, Engine.Type
+FROM Manufacturer, Engine
+WHERE Engine.ManufacturerId=Manufacturer.Id and Manufacturer.Name='VW';
+
+Drop view VWMotors;
+SELECT *
+FROM VWMotors;
+
+SELECT Car.Name, Manufacturer.Name
+From Car
+INNER JOIN Manufacturer
+ON Car.ManufacturerId=Manufacturer.Id;
+
+
+
+
+
+INSERT INTO Manufacturer
+VALUES
+(
+'1',
+'VW',
+'Germany'
+);
+
+INSERT INTO Manufacturer
+VALUES
+(
+'2',
+'Skoda',
+'Czech Republic'
+);
+
+INSERT INTO Manufacturer
+VALUES
+(
+'3',
+'Mercedes',
+'Germany'
+);
+
+INSERT INTO Manufacturer
+VALUES
+(
+'4',
+'Renault',
+'France'
+);
+
+INSERT INTO Engine
+VALUES(
+'1',
+'2.0 TDI',
+'150 hp',
+'1'
+);
+
+INSERT INTO Engine
+VALUES(
+'2',
+'2.0 TDI',
+'190 hp',
+'1'
+);
+
+INSERT INTO Engine
+VALUES(
+'3',
+'1.5 dci',
+'90 hp',
+'4'
+);
+
+INSERT INTO Engine
+VALUES(
+'4',
+'1.5 dci',
+'110 hp',
+'4'
+);
+
+
+INSERT INTO Engine
+VALUES(
+'5',
+'220 d',
+'170 hp',
+'3'
+);
+
+
+
+
+
+
+INSERT INTO Car
+VALUES(
+'1',
+'Golf',
+'1',
+'Hatchback',
+'1'
+);
+
+INSERT INTO Car
+VALUES(
+'2',
+'Octavia',
+'2',
+'Hatchback',
+'2'
+);
+
+INSERT INTO Car
+VALUES(
+'3',
+'C class',
+'3',
+'Saloon',
+'4'
+);
+
+INSERT INTO Car
+VALUES(
+'4',
+'C class',
+'3',
+'Saloon',
+'5'
+);
+
+INSERT INTO Car
+VALUES(
+'5',
+'Megan',
+'4',
+'Hatchback',
+'3'
+);
+
+INSERT INTO Car
+VALUES(
+'6',
+'Talisman',
+'4',
+'Saloon',
+'4'
+);
+
+INSERT INTO Car
+VALUES(
+'7',
+'Tiguan',
+'1',
+'SUV',
+'1'
+);
+
+
+
