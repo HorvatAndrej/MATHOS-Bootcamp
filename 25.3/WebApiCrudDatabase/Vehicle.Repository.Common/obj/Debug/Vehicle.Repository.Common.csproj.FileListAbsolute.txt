@@ -1,0 +1,11 @@
+C:\Users\Andrej\Documents\MATHOS-Bootcamp\25.3\WebApiCrudDatabase\Vehicle.Repository.Common\bin\Debug\Vehicle.Repository.Common.dll
+C:\Users\Andrej\Documents\MATHOS-Bootcamp\25.3\WebApiCrudDatabase\Vehicle.Repository.Common\bin\Debug\Vehicle.Repository.Common.pdb
+C:\Users\Andrej\Documents\MATHOS-Bootcamp\25.3\WebApiCrudDatabase\Vehicle.Repository.Common\bin\Debug\Vehicle.Model.dll
+C:\Users\Andrej\Documents\MATHOS-Bootcamp\25.3\WebApiCrudDatabase\Vehicle.Repository.Common\bin\Debug\Vehicle.Model.Common.dll
+C:\Users\Andrej\Documents\MATHOS-Bootcamp\25.3\WebApiCrudDatabase\Vehicle.Repository.Common\bin\Debug\Vehicle.Model.pdb
+C:\Users\Andrej\Documents\MATHOS-Bootcamp\25.3\WebApiCrudDatabase\Vehicle.Repository.Common\bin\Debug\Vehicle.Model.Common.pdb
+C:\Users\Andrej\Documents\MATHOS-Bootcamp\25.3\WebApiCrudDatabase\Vehicle.Repository.Common\obj\Debug\Vehicle.Repository.Common.csproj.AssemblyReference.cache
+C:\Users\Andrej\Documents\MATHOS-Bootcamp\25.3\WebApiCrudDatabase\Vehicle.Repository.Common\obj\Debug\Vehicle.Repository.Common.csproj.CoreCompileInputs.cache
+C:\Users\Andrej\Documents\MATHOS-Bootcamp\25.3\WebApiCrudDatabase\Vehicle.Repository.Common\obj\Debug\Vehicle.Repository.Common.csproj.CopyComplete
+C:\Users\Andrej\Documents\MATHOS-Bootcamp\25.3\WebApiCrudDatabase\Vehicle.Repository.Common\obj\Debug\Vehicle.Repository.Common.dll
+C:\Users\Andrej\Documents\MATHOS-Bootcamp\25.3\WebApiCrudDatabase\Vehicle.Repository.Common\obj\Debug\Vehicle.Repository.Common.pdb
