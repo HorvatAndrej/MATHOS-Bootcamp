@@ -9,6 +9,7 @@ using WebCRUD.Models;
 using System.Data.SqlClient;
 using Vehicle.Model;
 using Vehicle.Service;
+using System.Threading.Tasks;
 
 namespace WebApiCrudDatabase.Controllers
 {
@@ -16,14 +17,23 @@ namespace WebApiCrudDatabase.Controllers
     {
         List<Manufacturer> manufacturers = new List<Manufacturer>();
         [HttpGet]
-        public HttpResponseMessage GetAllManufacturers()
+        public async Task <HttpResponseMessage> GetAllManufacturersAsync()
         {
-            ManufacturerService manufacturer = new ManufacturerService();
-
-            manufacturers = manufacturer.GetAllManufacturersService();
+            ManufacturerService service = new ManufacturerService();
+            List<ManufacturerView> viewList = new List<ManufacturerView>();
+            manufacturers =await  service.GetAllManufacturersServiceAsync();
             if (manufacturers.Count() != 0)
-                return Request.CreateResponse(HttpStatusCode.OK, manufacturer.GetAllManufacturersService());
-            else return Request.CreateResponse(HttpStatusCode.BadRequest, "No engine.");
+            {
+                foreach (Manufacturer manufacturer in manufacturers)
+                {
+                    ManufacturerView view = new ManufacturerView();
+                    view.Name = manufacturer.Name;
+                    
+                    viewList.Add(view);
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, viewList);
+            }
+            else return Request.CreateResponse(HttpStatusCode.BadRequest, "No manfacturer");
 
         }
 
@@ -33,14 +43,21 @@ namespace WebApiCrudDatabase.Controllers
 
         [HttpGet]
         [Route("api/manufacturer/get/{Id}")]
-        public HttpResponseMessage GetManufacturerById(int id)
+        public async Task <HttpResponseMessage> GetManufacturerByIdAsync(int id)
         {
-            ManufacturerService manufacturer = new ManufacturerService();
-            Manufacturer manufacturerholder = manufacturer.GetManufacturerByIdService(id);
-
+            ManufacturerService service = new ManufacturerService();
+            Manufacturer manufacturerholder = await service.GetManufacturerByIdServiceAsync(id);
             if (manufacturerholder != null)
-                return Request.CreateResponse(HttpStatusCode.OK, manufacturerholder);
-            else return Request.CreateResponse(HttpStatusCode.BadRequest, "No engine.");
+            {
+                ManufacturerView view = new ManufacturerView();
+                view.Name = manufacturerholder.Name;
+
+                if (view != null)
+                    return Request.CreateResponse(HttpStatusCode.OK, view);
+                
+            }
+            else return Request.CreateResponse(HttpStatusCode.BadRequest, "No manufacturer");
+            return Request.CreateResponse(HttpStatusCode.BadRequest, "No manufacturer");
 
 
 
@@ -50,13 +67,13 @@ namespace WebApiCrudDatabase.Controllers
 
         [HttpPost]
         [Route("api/manufacturer/create")]
-        public HttpResponseMessage CreateNewManufacturer(Manufacturer manufacturer)
+        public async Task <HttpResponseMessage> CreateNewManufacturerAsync(ManufacturerRest manufacturer)
         {
             ManufacturerService service = new ManufacturerService();
             
-            if (service.CreateNewManufacturerService(manufacturer) == true)
+            if (await service.CreateNewManufacturerServiceAsync(manufacturer) == true)
             {
-                service.CreateNewManufacturerService(manufacturer);
+                
 
                 return Request.CreateResponse(HttpStatusCode.OK, $"Created");
             }
@@ -72,21 +89,24 @@ namespace WebApiCrudDatabase.Controllers
 
 
         [HttpPut]
-        [Route("api/manufacturer/update")]
-        public HttpResponseMessage UpdateManufacturerById(Manufacturer manufacturer)
+        [Route("api/manufacturer/update/{id}")]
+        public async Task <HttpResponseMessage> UpdateManufacturerByIdAsync(int id,ManufacturerRest manufacturer)
         {
             ManufacturerService service = new ManufacturerService();
-            
-            if (service.UpdateManufacturerByIdService(manufacturer) == true)
+            if (service.GetManufacturerByIdServiceAsync(id) != null)
             {
-                service.UpdateManufacturerByIdService(manufacturer);
+                if (await service.UpdateManufacturerByIdServiceAsync(id,manufacturer) == true)
+                {
+                    
 
-                return Request.CreateResponse(HttpStatusCode.OK, $"Updated!");
+                    return Request.CreateResponse(HttpStatusCode.OK, $"Updated!");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, $"Not found");
+                }
             }
-            else
-            {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"Not found");
-            }
+            else return Request.CreateResponse(HttpStatusCode.BadRequest, $"Not found");
         }
 
 
@@ -95,13 +115,13 @@ namespace WebApiCrudDatabase.Controllers
 
         [HttpDelete]
         [Route("api/manufacturer/delete/{Id}")]
-        public HttpResponseMessage DeleteManufacturerByID(int id)
+        public async Task <HttpResponseMessage> DeleteManufacturerByIDAsync(int id)
         {
             ManufacturerService service = new ManufacturerService();
             
-            if (service.DeleteManufacturerByIdService(id) == true)
+            if (await service.DeleteManufacturerByIdServiceAsync(id) == true)
             {
-                service.DeleteManufacturerByIdService(id);
+                await service.DeleteManufacturerByIdServiceAsync(id);
 
                 return Request.CreateResponse(HttpStatusCode.OK, $"Deleted");
             }
@@ -117,4 +137,6 @@ namespace WebApiCrudDatabase.Controllers
 
 
     }
+
+   
 }

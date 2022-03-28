@@ -9,11 +9,11 @@ namespace Vehicle.Repository.Common
 {
     public interface IManufacturerRepository
     {
-        List<Manufacturer> GetAllManufacturersRepository();
-        Manufacturer GetManufacturerByIdRepository(int id);
-        bool CreateNewManufacturerRepository(Manufacturer manufacturer);
-        bool UpdateManufacturerByIdRepository(Manufacturer manufacturer);
-        bool DeleteManufacturerByIdRepository(int id);
+        Task<List<Manufacturer>> GetAllManufacturersRepositoryAsync();
+        Task<Manufacturer> GetManufacturerByIdRepositoryAsync(int id);
+        Task<bool> CreateNewManufacturerRepositoryAsync(ManufacturerRest manufacturer);
+        Task<bool> UpdateManufacturerByIdRepositoryAsync(int id,ManufacturerRest manufacturer);
+        Task<bool> DeleteManufacturerByIdRepositoryAsync(int id);
 
     }
 }

@@ -16,7 +16,7 @@ namespace Vehicle.Repository
         List<Manufacturer> manufacturers = new List<Manufacturer>();
 
 
-        public List<Manufacturer> GetAllManufacturersRepository()
+        public async Task<List<Manufacturer>> GetAllManufacturersRepositoryAsync()
         {
             SqlConnection connection = new SqlConnection(connectionToString);
 
@@ -24,8 +24,8 @@ namespace Vehicle.Repository
             using (connection)
             {
                 SqlCommand command = new SqlCommand("Select * from Manufacturer", connection);
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
+                await connection.OpenAsync();
+                SqlDataReader reader =await command.ExecuteReaderAsync();
                 if (reader.HasRows)
                 {
                     while (reader.Read())
@@ -45,7 +45,7 @@ namespace Vehicle.Repository
         }
 
 
-        public Manufacturer GetManufacturerByIdRepository(int id)
+        public async Task<Manufacturer> GetManufacturerByIdRepositoryAsync(int id)
         {
             SqlConnection connection = new SqlConnection(connectionToString);
 
@@ -53,10 +53,10 @@ namespace Vehicle.Repository
             using (connection)
             {
 
-                connection.Open();
+                await connection.OpenAsync();
                 SqlCommand command = new SqlCommand($"Select * from Manufacturer where Manufacturer.Id={id}", connection);
 
-                SqlDataReader reader = command.ExecuteReader();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
                 if (reader.HasRows)
                 {
                     while (reader.Read())
@@ -81,17 +81,17 @@ namespace Vehicle.Repository
 
         }
 
-        public bool CreateNewManufacturerRepository(Manufacturer manufacturer)
+        public async Task <bool> CreateNewManufacturerRepositoryAsync(ManufacturerRest manufacturer)
         {
-            if (GetManufacturerByIdRepository(manufacturer.Id) != null) return false;
+            int Id = await GetLastManufacturerIdRepositoryAsync() + 1;
             SqlConnection connection = new SqlConnection(connectionToString);
             using (connection)
             {
-                string queryString = $"INSERT INTO Manufacturer (Id, Name, Country) VALUES ('{manufacturer.Id}', '{manufacturer.Name}', '{manufacturer.Country}')";
-                connection.Open();
+                string queryString = $"INSERT INTO Manufacturer (Id, Name, Country) VALUES ('{Id}', '{manufacturer.Name}', '{manufacturer.Country}')";
+                await connection.OpenAsync();
                 SqlDataAdapter adapter = new SqlDataAdapter(queryString, connection);               
                 DataSet manufacturers = new DataSet();
-                adapter.Fill(manufacturers, "Manufacturers");
+                await Task.Run(() => adapter.Fill(manufacturers, "Manufacturers"));
                 connection.Close(); 
                 return true; 
                 
@@ -100,18 +100,18 @@ namespace Vehicle.Repository
 
         }
 
-        public bool UpdateManufacturerByIdRepository(Manufacturer manufacturer)
+        public async Task<bool> UpdateManufacturerByIdRepositoryAsync(int id,ManufacturerRest manufacturer)
         {
-            if (GetManufacturerByIdRepository(manufacturer.Id) == null) return false;
+            if (await GetManufacturerByIdRepositoryAsync(id) == null) return false;
             SqlConnection connection = new SqlConnection(connectionToString);
             using (connection)
             {
                 
-                string queryString = $"UPDATE Manufacturer SET Id='{manufacturer.Id}',Name='{manufacturer.Name}',Country='{manufacturer.Country}' WHERE Id='{manufacturer.Id}'";
-                connection.Open();
+                string queryString = $"UPDATE Manufacturer SET Name='{manufacturer.Name}',Country='{manufacturer.Country}' WHERE Id='{id}'";
+                await connection.OpenAsync();
                 SqlDataAdapter adapter = new SqlDataAdapter(queryString, connection);   
                 DataSet manufacturers = new DataSet();
-                adapter.Fill(manufacturers, "Manufacturers");
+                await Task.Run(() => adapter.Fill(manufacturers, "Manufacturers"));
                 connection.Close(); 
                 return true; 
                 
@@ -119,21 +119,49 @@ namespace Vehicle.Repository
 
         }
 
-        public bool DeleteManufacturerByIdRepository(int id)
+        public async Task<bool> DeleteManufacturerByIdRepositoryAsync(int id)
         {
-            if (GetManufacturerByIdRepository(id)==null) return false;
+            if (await GetManufacturerByIdRepositoryAsync(id)==null) return false;
             SqlConnection connection = new SqlConnection(connectionToString);
             using (connection)
             {                
                 string queryString = $"DELETE FROM Manufacturer WHERE Manufacturer.Id='{id}'";
-                connection.Open();
+                await connection.OpenAsync();
                 SqlDataAdapter adapter = new SqlDataAdapter(queryString, connection);             
                 DataSet manufacturer = new DataSet();
-                adapter.Fill(manufacturer, "Manufacturer");
+                await Task.Run(() => adapter.Fill(manufacturer, "Manufacturer"));
                 connection.Close();
                 return true;
             }
 
+
+        }
+        public async Task<int> GetLastManufacturerIdRepositoryAsync()
+        {
+            SqlConnection connection = new SqlConnection(connectionToString);
+            using (connection)
+            {
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand($"Select Max(Id) from Manufacturer", connection);
+
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+                int engineId = 0;
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        engineId = reader.GetInt32(0);
+
+
+                    }
+                    connection.Close();
+                    return engineId;
+
+
+                }
+                else { connection.Close(); return 0; }
+
+            }
 
         }
     }

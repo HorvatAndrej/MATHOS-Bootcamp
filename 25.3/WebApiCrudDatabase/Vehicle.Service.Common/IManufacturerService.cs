@@ -9,11 +9,11 @@ namespace Vehicle.Service.Common
 {
     public interface IManufacturerService
     {
-        List<Manufacturer> GetAllManufacturersService();
-        Manufacturer GetManufacturerByIdService(int id);
-        bool CreateNewManufacturerService(Manufacturer manufacturer);
-        bool UpdateManufacturerByIdService(Manufacturer manufacturer);
-        bool DeleteManufacturerByIdService(int id);
+        Task<List<Manufacturer>> GetAllManufacturersServiceAsync();
+        Task<Manufacturer> GetManufacturerByIdServiceAsync(int id);
+        Task<bool> CreateNewManufacturerServiceAsync(ManufacturerRest manufacturer);
+        Task<bool> UpdateManufacturerByIdServiceAsync(int id,ManufacturerRest manufacturer);
+        Task<bool> DeleteManufacturerByIdServiceAsync(int id);
 
 
 

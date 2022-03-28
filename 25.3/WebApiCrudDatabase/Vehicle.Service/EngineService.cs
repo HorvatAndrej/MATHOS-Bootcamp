@@ -11,52 +11,56 @@ namespace Vehicle.Service
 {
     public class EngineService:IEngineService
     {
-        public List<Engine> GetAllEnginesService()
+        public async Task<List<Engine>> GetAllEnginesServiceAsync()
         {
             EngineRepository engine=new EngineRepository();
-            return engine.GetAllEnginesRepository();
+            return await engine.GetAllEnginesRepositoryAsync();
         }
 
-        public Engine GetEngineByIdService(int id)
+        public async Task<Engine> GetEngineByIdServiceAsync(int id)
         {
             EngineRepository engine = new EngineRepository();
-            return engine.GetEngineByIdRepository(id);
+            return await engine.GetEngineByIdRepositoryAsync(id);
         }
 
 
-        public bool CreateNewEngineService(Engine engine)
+        public async Task <bool> CreateNewEngineServiceAsync(EngineRest engine)
         {
             EngineRepository repository = new EngineRepository();
-            if (repository.CreateNewEngineRepository(engine) == true)
+            if (await repository.CreateNewEngineRepositoryAsync(engine) == true)
             {
-                repository.CreateNewEngineRepository(engine);
+               
                 return true;
             }
             else return false;
         }
 
-        public bool UpdateEngineByIdService(Engine engine)
+        public async Task <bool>UpdateEngineByIdServiceAsync(int id, EngineRest engine)
         {
             EngineRepository repository=new EngineRepository();
-            
-            if (repository.UpdateEngineByIdRepository(engine) == true)
+            if (await repository.GetEngineByIdRepositoryAsync(id) != null)
             {
-                repository.UpdateEngineByIdRepository(engine);
-                return true;
+                if (await repository.UpdateEngineByIdRepositoryAsync(id, engine) == true)
+                {
+                    
+                    return true;
+                }
+                else return false;
             }
             else return false;
         }
 
-        public bool DeleteEngineByIdService(int id)
+        public async Task<bool> DeleteEngineByIdServiceAsync(int id)
         {
             EngineRepository repository = new EngineRepository();
 
-            if (repository.DeleteEngineByIdRepository(id) == true)
+            if (await repository.DeleteEngineByIdRepositoryAsync(id) == true)
             {
-                repository.DeleteEngineByIdRepository(id); return true;
+                return true;
             }
             else return false;
         }
 
     }
+   
 }

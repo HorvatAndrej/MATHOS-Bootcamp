@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.Data;
 using Vehicle.Service;
 using Vehicle.Model;
+using System.Threading.Tasks;
 
 namespace WebApiCrudDatabase.Controllers
 {
@@ -17,14 +18,25 @@ namespace WebApiCrudDatabase.Controllers
     {
 
         List<Engine> engines = new List<Engine>();
+        
         [HttpGet]
-        public HttpResponseMessage GetAllEngines()
+        public async Task<HttpResponseMessage> GetAllEngines()
         {
-            EngineService engine = new EngineService();
-
-            engines = engine.GetAllEnginesService();
+            EngineService service = new EngineService();
+            List<EngineView> viewList= new List<EngineView>();
+            engines = await service.GetAllEnginesServiceAsync();
             if (engines.Count() != 0)
-                return Request.CreateResponse(HttpStatusCode.OK, engine.GetAllEnginesService());
+            {
+                foreach (Engine engine in engines)
+                {
+                    EngineView view = new EngineView();
+                    view.Name = engine.Name;
+                    view.Type = engine.Type;
+                    viewList.Add(view);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, viewList);
+            }
             else return Request.CreateResponse(HttpStatusCode.BadRequest, "No engine.");
 
         }
@@ -35,13 +47,19 @@ namespace WebApiCrudDatabase.Controllers
 
         [HttpGet]
         [Route("api/engine/get/{Id}")]
-        public HttpResponseMessage GetEngineById(int id)
+        public async Task <HttpResponseMessage> GetEngineByIdAsync(int id)
         {
             EngineService engine = new EngineService();
-            Engine engineholder = engine.GetEngineByIdService(id);
+            Engine engineholder =await  engine.GetEngineByIdServiceAsync(id);
+            EngineView view = new EngineView();
+           
 
             if (engineholder != null)
-                return Request.CreateResponse(HttpStatusCode.OK, engineholder);
+            {
+                view.Name = engineholder.Name;
+                view.Type = engineholder.Type;
+                return Request.CreateResponse(HttpStatusCode.OK, view);
+            }
             else return Request.CreateResponse(HttpStatusCode.BadRequest, "No engine.");
 
 
@@ -52,12 +70,13 @@ namespace WebApiCrudDatabase.Controllers
 
         [HttpPost]
         [Route("api/engine/create")]
-        public HttpResponseMessage CreateNewEngine(Engine engine)
+        public async Task <HttpResponseMessage> CreateNewEngineAsync(EngineRest engineRest)
         {
             EngineService service = new EngineService();
-            if (service.CreateNewEngineService(engine) == true)
+          
+            if (await service.CreateNewEngineServiceAsync(engineRest) == true)
             {
-                service.CreateNewEngineService(engine);
+                
 
                 return Request.CreateResponse(HttpStatusCode.OK, $"Created");
             }
@@ -71,21 +90,25 @@ namespace WebApiCrudDatabase.Controllers
 
 
         [HttpPut]
-        [Route("api/engine/update")]
-        public HttpResponseMessage UpdateEngineById(Engine engine)
+        [Route("api/engine/update/{Id}")]
+        public async Task <HttpResponseMessage> UpdateEngineByIdAsync(int id,EngineRest engine)
         {
             EngineService service = new EngineService();
-            
-            if (service.UpdateEngineByIdService(engine) == true)
+            if (service.GetEngineByIdServiceAsync(id) != null)
             {
-                service.UpdateEngineByIdService(engine);
 
-                return Request.CreateResponse(HttpStatusCode.OK, $"Updated!");
+                if (await service.UpdateEngineByIdServiceAsync(id,engine) == true)
+                {
+
+
+                    return Request.CreateResponse(HttpStatusCode.OK, $"Updated!");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, $"Can't update");
+                }
             }
-            else
-            {
-                return Request.CreateResponse(HttpStatusCode.OK, $"Not found");
-            }
+            else return Request.CreateResponse(HttpStatusCode.BadRequest, $"Not found");
         }
 
 
@@ -94,13 +117,13 @@ namespace WebApiCrudDatabase.Controllers
 
         [HttpDelete]
         [Route("api/engine/delete/{Id}")]
-        public HttpResponseMessage DeleteEngineByID(int id)
+        public async Task<HttpResponseMessage> DeleteEngineByIDAsync(int id)
         {
            EngineService service=new EngineService();
 
-            if (service.DeleteEngineByIdService(id) == true)
+            if (await service.DeleteEngineByIdServiceAsync(id) == true)
             {
-                service.DeleteEngineByIdService(id);
+                await service.DeleteEngineByIdServiceAsync(id);
 
                 return Request.CreateResponse(HttpStatusCode.OK, $"Deleted");
             }
@@ -109,5 +132,10 @@ namespace WebApiCrudDatabase.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, $"Not found");
             }
         }
+        
     }
+
+   
+
+   
 }

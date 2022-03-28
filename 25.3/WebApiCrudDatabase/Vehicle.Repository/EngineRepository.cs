@@ -12,13 +12,13 @@ using Vehicle.Repository.Common;
 
 namespace Vehicle.Repository
 {
-    public class EngineRepository:IEngineRepository
+    public class EngineRepository : IEngineRepository
     {
         static string connectionToString = "Data Source=DESKTOP-IPG6JPI;Initial Catalog=Vehicle;Integrated Security=True";
         List<Engine> engines = new List<Engine>();
 
-        
-        public List<Engine> GetAllEnginesRepository()
+
+        public async Task<List<Engine>> GetAllEnginesRepositoryAsync()
         {
             SqlConnection connection = new SqlConnection(connectionToString);
 
@@ -26,8 +26,9 @@ namespace Vehicle.Repository
             using (connection)
             {
                 SqlCommand command = new SqlCommand("Select * from Engine", connection);
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
+                await connection.OpenAsync();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+
                 if (reader.HasRows)
                 {
                     while (reader.Read())
@@ -39,26 +40,27 @@ namespace Vehicle.Repository
                         model.ManufacturerId = reader.GetInt32(3);
                         engines.Add(model);
                     }
-                    connection.Close();                  
+                    connection.Close();
                     return engines;
                 }
                 else { connection.Close(); return null; }
             }
         }
 
-        
-        public Engine GetEngineByIdRepository(int id)
+
+        public async Task<Engine> GetEngineByIdRepositoryAsync(int id)
         {
             SqlConnection connection = new SqlConnection(connectionToString);
-            
+
 
             using (connection)
             {
 
-                connection.Open();
+                await connection.OpenAsync();
                 SqlCommand command = new SqlCommand($"Select * from Engine where Engine.Id={id}", connection);
 
-                SqlDataReader reader = command.ExecuteReader();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+
                 if (reader.HasRows)
                 {
                     while (reader.Read())
@@ -68,14 +70,14 @@ namespace Vehicle.Repository
                         model.Name = reader.GetString(1);
                         model.Id = reader.GetInt32(0);
                         model.Type = reader.GetString(2);
-                        model.ManufacturerId = reader.GetInt32(3);                      
-                        connection.Close();                        
+                        model.ManufacturerId = reader.GetInt32(3);
+                        connection.Close();
                         return model;
                     }
 
 
                 }
-                else {connection.Close(); return null; }
+                else { connection.Close(); return null; }
 
 
             }
@@ -83,62 +85,95 @@ namespace Vehicle.Repository
 
         }
 
-        public bool CreateNewEngineRepository(Engine engine)
+        public async Task<bool> CreateNewEngineRepositoryAsync(EngineRest engine)
         {
-            if (GetEngineByIdRepository(engine.Id) != null) return false;
-
+            int Id = await GetLastEngineIdRepositoryAsync()+1;
+            
+            
             SqlConnection connection = new SqlConnection(connectionToString);
             using (connection)
             {
 
-                connection.Open(); string queryString = $"INSERT INTO Engine (Id, Name, Type, ManufacturerID) VALUES ('{engine.Id}', '{engine.Name}', '{engine.Type}', '{engine.ManufacturerId}')";
+                await connection.OpenAsync();
+                string queryString = $"INSERT INTO Engine (Id, Name, Type, ManufacturerID) VALUES ('{Id}', '{engine.Name}', '{engine.Type}', '{engine.ManufacturerId}')";
                 SqlDataAdapter adapter = new SqlDataAdapter(queryString, connection);
                 DataSet engines = new DataSet();
-                adapter.Fill(engines, "Engines");
+                await Task.Run(() => adapter.Fill(engines, "Engines"));
                 connection.Close();
                 return true;
             }
 
-            
+
         }
 
-        public bool UpdateEngineByIdRepository(Engine engine)
+        public async Task<bool> UpdateEngineByIdRepositoryAsync(int id, EngineRest engine)
         {
-            if (GetEngineByIdRepository(engine.Id) == null) return false;
+            if (GetEngineByIdRepositoryAsync(id) == null) return false;
             SqlConnection connection = new SqlConnection(connectionToString);
-            using(connection)
-            { 
-            string queryString = $"UPDATE Engine SET Id='{engine.Id}',Name='{engine.Name}',Type='{engine.Type}', ManufacturerId='{engine.ManufacturerId}' WHERE Id='{engine.Id}'";
-            connection.Open();
-            SqlDataAdapter adapter = new SqlDataAdapter(queryString, connection);
-            DataSet engines = new DataSet();
-            adapter.Fill(engines, "Engines");
-            connection.Close(); 
-            return true; 
+            using (connection)
+            {
+                string queryString = $"UPDATE Engine SET Name='{engine.Name}',Type='{engine.Type}', ManufacturerId='{engine.ManufacturerId}' WHERE Id='{id}'";
+                await connection.OpenAsync();
+                SqlDataAdapter adapter = new SqlDataAdapter(queryString, connection);
+                DataSet engines = new DataSet();
+                await Task.Run(() => adapter.Fill(engines, "Engines"));
+                connection.Close();
+                return true;
             }
-            
+
 
         }
 
-        public bool DeleteEngineByIdRepository(int id)
+        public async Task<bool> DeleteEngineByIdRepositoryAsync(int id)
         {
-            if (GetEngineByIdRepository(id) == null) return false;
+            if ((await GetEngineByIdRepositoryAsync(id)) == null) return false;
             SqlConnection connection = new SqlConnection(connectionToString);
             using (connection)
             {
                 string queryString = $"DELETE FROM Engine WHERE Id='{id}'";
-                connection.Open();
+                await connection.OpenAsync();
+
                 SqlDataAdapter adapter = new SqlDataAdapter(queryString, connection);
                 DataSet engines = new DataSet();
-                adapter.Fill(engines, "Engines");
+                await Task.Run(() => adapter.Fill(engines, "Engines"));
                 connection.Close();
                 return true;
             }
 
-            
+
+        }
+
+        public async Task<int> GetLastEngineIdRepositoryAsync()
+        {
+            SqlConnection connection = new SqlConnection(connectionToString);
+            using(connection)
+            {
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand($"Select Max(Id) from Engine", connection);
+
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+                int engineId=0;
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                         engineId = reader.GetInt32(0);
+
+                       
+                    }
+                    connection.Close();
+                    return engineId;
+
+
+                }
+                else { connection.Close(); return 0; }
+
+            }
+
         }
 
 
 
     }
 }
+    

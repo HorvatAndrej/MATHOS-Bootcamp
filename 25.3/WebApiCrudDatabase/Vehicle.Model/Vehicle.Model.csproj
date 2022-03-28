@@ -42,7 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Engine.cs" />
+    <Compile Include="EngineRest.cs" />
+    <Compile Include="EngineView.cs" />
     <Compile Include="Manufacturer.cs" />
+    <Compile Include="ManufacturerRest.cs" />
+    <Compile Include="ManufacturerView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

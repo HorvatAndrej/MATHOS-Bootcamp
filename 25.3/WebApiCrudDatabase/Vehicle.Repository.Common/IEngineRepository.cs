@@ -9,11 +9,12 @@ namespace Vehicle.Repository.Common
 {
     public interface IEngineRepository
     {
-        List<Engine> GetAllEnginesRepository();
-        Engine GetEngineByIdRepository(int id);
-        bool CreateNewEngineRepository(Engine engine);
-        bool UpdateEngineByIdRepository(Engine engine);
-        bool DeleteEngineByIdRepository(int id);
+         Task<List<Engine>> GetAllEnginesRepositoryAsync();
+         Task<Engine> GetEngineByIdRepositoryAsync(int id);
+         Task<bool> CreateNewEngineRepositoryAsync(EngineRest engine);
+         Task<bool> UpdateEngineByIdRepositoryAsync(int id,EngineRest engine);
+         Task<bool> DeleteEngineByIdRepositoryAsync(int id);
+        Task<int> GetLastEngineIdRepositoryAsync();
 
     }
 }

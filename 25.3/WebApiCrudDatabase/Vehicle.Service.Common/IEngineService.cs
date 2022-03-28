@@ -9,10 +9,10 @@ namespace Vehicle.Service.Common
 {
     public interface IEngineService
     {
-        List<Engine> GetAllEnginesService();
-        Engine GetEngineByIdService(int id);
-        bool CreateNewEngineService(Engine engine);
-        bool UpdateEngineByIdService(Engine engine);
-        bool DeleteEngineByIdService(int id);
+         Task<List<Engine>> GetAllEnginesServiceAsync();
+         Task<Engine> GetEngineByIdServiceAsync(int id);
+         Task<bool> CreateNewEngineServiceAsync(EngineRest engine);
+         Task<bool> UpdateEngineByIdServiceAsync(int id,EngineRest engine);
+         Task<bool> DeleteEngineByIdServiceAsync(int id);
     }
 }
