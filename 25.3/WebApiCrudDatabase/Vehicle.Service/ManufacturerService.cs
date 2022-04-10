@@ -3,30 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vehicle.DAL.Common;
 using Vehicle.Model;
 using Vehicle.Repository;
+using Vehicle.Repository.Common;
 using Vehicle.Service.Common;
 
 namespace Vehicle.Service
 {
     public class ManufacturerService:IManufacturerService
     {
-        public async Task<List<Manufacturer>> GetAllManufacturersServiceAsync()
+        protected IManufacturerRepository repository { get; set; }
+        public ManufacturerService(IManufacturerRepository repository)
         {
-            ManufacturerRepository manufacturer = new ManufacturerRepository();
-            return await manufacturer.GetAllManufacturersRepositoryAsync();
+            this.repository = repository;
+        }
+        public async Task<List<Manufacturer>> GetAllManufacturersServiceAsync(Sorting sorting, Paging paging, ManufacturerFilter filter)
+        {
+            
+            return await repository.GetAllManufacturersRepositoryAsync(sorting, paging, filter);
         }
 
         public async Task <Manufacturer> GetManufacturerByIdServiceAsync(int id)
         {
-            ManufacturerRepository manufacturer = new ManufacturerRepository();
-            return await manufacturer.GetManufacturerByIdRepositoryAsync(id);
+            
+            return await repository.GetManufacturerByIdRepositoryAsync(id);
         }
 
 
         public async Task <bool> CreateNewManufacturerServiceAsync(ManufacturerRest manufacturer)
         {
-            ManufacturerRepository repository = new ManufacturerRepository();
+            
            
             if (await repository.CreateNewManufacturerRepositoryAsync(manufacturer) == true)
             {
@@ -38,7 +45,7 @@ namespace Vehicle.Service
 
         public async Task <bool> UpdateManufacturerByIdServiceAsync(int id,ManufacturerRest manufacturer)
         {
-            ManufacturerRepository repository = new ManufacturerRepository();
+            
             
             if (await repository.UpdateManufacturerByIdRepositoryAsync(id,manufacturer) == true)
             {
@@ -50,7 +57,7 @@ namespace Vehicle.Service
 
         public async Task<bool> DeleteManufacturerByIdServiceAsync(int id)
         {
-            ManufacturerRepository repository = new ManufacturerRepository();
+            
 
             if (await repository.DeleteManufacturerByIdRepositoryAsync(id) == true)
             {

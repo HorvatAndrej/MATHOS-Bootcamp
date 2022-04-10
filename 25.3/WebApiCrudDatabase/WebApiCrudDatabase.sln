@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicle.Repository.Common",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicle.DAL", "Vehicle.DAL\Vehicle.DAL.csproj", "{A9C59A27-06D1-445E-98B1-9C1CDB3C507B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicle.DAL.Common", "Vehicle.DAL.Common\Vehicle.DAL.Common.csproj", "{189E891B-6CC2-415E-8669-0011FBDC855C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicle.Common", "Vehicle.DAL.Common\Vehicle.Common.csproj", "{189E891B-6CC2-415E-8669-0011FBDC855C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vehicle.Model", "Vehicle.Model\Vehicle.Model.csproj", "{F7C7C5E1-96FE-40C5-8733-F697A41F3A34}"
 EndProject

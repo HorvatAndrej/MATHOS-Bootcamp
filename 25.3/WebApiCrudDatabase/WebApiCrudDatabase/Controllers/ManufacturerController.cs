@@ -10,18 +10,27 @@ using System.Data.SqlClient;
 using Vehicle.Model;
 using Vehicle.Service;
 using System.Threading.Tasks;
+using Vehicle.Service.Common;
+using System.Web.Http.Controllers;
+using Vehicle.DAL.Common;
 
 namespace WebApiCrudDatabase.Controllers
 {
-    public class ManufacturerController:ApiController
+    public class ManufacturerController:ApiController,IHttpController
     {
         List<Manufacturer> manufacturers = new List<Manufacturer>();
-        [HttpGet]
-        public async Task <HttpResponseMessage> GetAllManufacturersAsync()
+        
+        protected IManufacturerService service { get; set; }
+        public ManufacturerController(IManufacturerService service)
         {
-            ManufacturerService service = new ManufacturerService();
+            this.service = service;
+        }
+        [HttpGet]
+        public async Task <HttpResponseMessage> GetAllManufacturersAsync(Sorting sorting, Paging paging, ManufacturerFilter filter)
+        {
+            
             List<ManufacturerView> viewList = new List<ManufacturerView>();
-            manufacturers =await  service.GetAllManufacturersServiceAsync();
+            manufacturers =await  service.GetAllManufacturersServiceAsync(sorting, paging, filter);
             if (manufacturers.Count() != 0)
             {
                 foreach (Manufacturer manufacturer in manufacturers)
@@ -45,7 +54,7 @@ namespace WebApiCrudDatabase.Controllers
         [Route("api/manufacturer/get/{Id}")]
         public async Task <HttpResponseMessage> GetManufacturerByIdAsync(int id)
         {
-            ManufacturerService service = new ManufacturerService();
+            
             Manufacturer manufacturerholder = await service.GetManufacturerByIdServiceAsync(id);
             if (manufacturerholder != null)
             {
@@ -69,7 +78,7 @@ namespace WebApiCrudDatabase.Controllers
         [Route("api/manufacturer/create")]
         public async Task <HttpResponseMessage> CreateNewManufacturerAsync(ManufacturerRest manufacturer)
         {
-            ManufacturerService service = new ManufacturerService();
+            
             
             if (await service.CreateNewManufacturerServiceAsync(manufacturer) == true)
             {
@@ -92,7 +101,7 @@ namespace WebApiCrudDatabase.Controllers
         [Route("api/manufacturer/update/{id}")]
         public async Task <HttpResponseMessage> UpdateManufacturerByIdAsync(int id,ManufacturerRest manufacturer)
         {
-            ManufacturerService service = new ManufacturerService();
+            
             if (service.GetManufacturerByIdServiceAsync(id) != null)
             {
                 if (await service.UpdateManufacturerByIdServiceAsync(id,manufacturer) == true)
@@ -117,7 +126,7 @@ namespace WebApiCrudDatabase.Controllers
         [Route("api/manufacturer/delete/{Id}")]
         public async Task <HttpResponseMessage> DeleteManufacturerByIDAsync(int id)
         {
-            ManufacturerService service = new ManufacturerService();
+            
             
             if (await service.DeleteManufacturerByIdServiceAsync(id) == true)
             {

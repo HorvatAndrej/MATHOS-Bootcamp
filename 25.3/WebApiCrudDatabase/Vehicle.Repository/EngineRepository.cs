@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Vehicle.DAL.Common;
 using Vehicle.Model;
 using Vehicle.Repository.Common;
 
@@ -18,14 +19,33 @@ namespace Vehicle.Repository
         List<Engine> engines = new List<Engine>();
 
 
-        public async Task<List<Engine>> GetAllEnginesRepositoryAsync()
+        public async Task<List<Engine>> GetAllEnginesRepositoryAsync(Sorting sorting, Paging paging, EngineFilter filter)
         {
             SqlConnection connection = new SqlConnection(connectionToString);
+            StringBuilder query = new StringBuilder("Select * from Engine ");
+            if (filter != null)
+            {
+                query.Append("WHERE 1=1 ");
+
+                if (!string.IsNullOrWhiteSpace(filter.Name))
+                    query.Append($"AND Name like '%{filter.Name}%' ");
+                if (filter.Id != null)
+                    query.Append($"AND Id={filter.Id} ");
+            }
+            if (sorting != null)
+            {
+               
+                    query.Append($"ORDER BY {sorting.ColumnName} {sorting.SortOrder} ");
+                
+            }
+            if (paging != null)
+                query.Append($"OFFSET ({paging.PageNumber-1})*{paging.ObjectsPerPage} ROWS FETCH NEXT {paging.ObjectsPerPage} ROWS ONLY");
+
 
 
             using (connection)
             {
-                SqlCommand command = new SqlCommand("Select * from Engine", connection);
+                SqlCommand command = new SqlCommand(query.ToString(), connection);
                 await connection.OpenAsync();
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 

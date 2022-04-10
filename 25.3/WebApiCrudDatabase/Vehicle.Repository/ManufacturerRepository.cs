@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vehicle.DAL.Common;
 using Vehicle.Model;
 using Vehicle.Repository.Common;
 
@@ -16,14 +17,34 @@ namespace Vehicle.Repository
         List<Manufacturer> manufacturers = new List<Manufacturer>();
 
 
-        public async Task<List<Manufacturer>> GetAllManufacturersRepositoryAsync()
+        public async Task<List<Manufacturer>> GetAllManufacturersRepositoryAsync(Sorting sorting, Paging paging, ManufacturerFilter filter)
         {
             SqlConnection connection = new SqlConnection(connectionToString);
-
+            StringBuilder query = new StringBuilder("Select * from Manufacturer");
+            if (filter != null)
+            {
+                query.Append("WHERE 1=1");
+      
+                if (filter.Name != null)
+                    query.Append($"AND  Name like '{filter.Name}'");
+                if (filter.Id != 0)
+                    query.Append($"AND  Id = '{filter.Id}'");
+            }
+            if (sorting != null)
+            {
+                if (sorting.SortOrder.ToUpper() == "DESC")
+                    query.Append($"ORDER BY '{sorting.ColumnName}' DESC");
+                else query.Append($"ORDER BY '{sorting.ColumnName}'");
+            }
+            if (paging != null)
+                query.Append($"OFFSET '{(paging.PageNumber - 1)}'*'{paging.ObjectsPerPage}' ROWS FETCH NEXT '{paging.ObjectsPerPage}' ROWS ONLY");
+            
+        
+        
 
             using (connection)
             {
-                SqlCommand command = new SqlCommand("Select * from Manufacturer", connection);
+                SqlCommand command = new SqlCommand(query.ToString(), connection);
                 await connection.OpenAsync();
                 SqlDataReader reader =await command.ExecuteReaderAsync();
                 if (reader.HasRows)
