@@ -1,0 +1,56 @@
+<!DOCUMNET html>
+<html lang="en-Us">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="ConstructionStyle.css"/>
+<link rel="stylesheet" href="DropdownStyle.css"/>
+
+</head>
+<body>
+<script type="text/javascript" src="JavaScript.js"></script>
+<div class="header">	
+  <h1>Home Improvement d.o.o</h1>
+  <p>Construction and renovations</p>
+</div>
+
+<div class="navbar">
+  <a href="#">Home</a>
+  <a href="Contact.html">Contact</a>
+  <a href="About.html">About</a>
+</div>
+<p>Click on the button to open the dropdown menu.</p>
+
+<div class="dropdown">
+  <button onclick="DropdownFunction()" class="dropbtn">Dropdown</button>
+  <div id="myDropdown" class="dropdown-content">
+    <a href="#">Home</a>
+    <a href="About.html">About</a>
+    <a href="Contact.html">Contact</a>
+  </div>
+</div>
+<img src="villa.png" alt="Luxury villa" width="800" height="400" align="right"></img>
+<p padding>Are you looking for a contrusticon company:</p>
+<form>
+  <input type="radio" id="Yes" name="yes_no" value="Yes">
+  <label for="html">Yes</label><br>
+  <input type="radio" id="No" name="yes_no" value="No">
+  <label for="css">No</label><br>
+</form>
+ <p>
+<button id="btn" onclick=ShowAnswer(form)>Show Selected Answer</button>
+</p>
+
+<p id="output"></p>
+
+<dl>
+  <dt>We do:</dt>
+  <dd>- Strip out and removal</dd>
+  <dd>- Structural work – floors, ceilings, walls.</dd>
+  <dd>- First fix work – plumbing, heating wiring.</dd>
+  <dd>- Plastering, flooring.</dd>
+  <dd>- Second fix work – plumbing, heating, wiring.</dd>
+  <dd>- Bathroom, kitchen fit-out</dd>
+  <dd>- Decoration</dd> 
+</dl>
+</body>
+</html>
