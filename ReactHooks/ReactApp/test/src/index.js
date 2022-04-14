@@ -25,7 +25,10 @@ ReactDOM.render(
     <ContactForm />
 <Button/>*/}
     
-    <ContactApp/>
+    
+
+
+    <ContactForm/>
     
     
     
