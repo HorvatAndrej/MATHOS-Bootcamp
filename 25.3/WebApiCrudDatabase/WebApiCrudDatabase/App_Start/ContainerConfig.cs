@@ -31,7 +31,7 @@ namespace WebApiCrudDatabase.App_Start
             var container=builder.Build();
             var config = GlobalConfiguration.Configuration;
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
-
+            GlobalConfiguration.Configuration.DependencyResolver=config.DependencyResolver;
 
 
 

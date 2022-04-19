@@ -13,9 +13,11 @@ using Vehicle.Model;
 using System.Threading.Tasks;
 using Vehicle.Service.Common;
 using Vehicle.DAL.Common;
+using System.Web.Http.Cors;
 
 namespace WebApiCrudDatabase.Controllers
 {
+    [EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
     public class EngineController : ApiController
     {
 
@@ -63,7 +65,7 @@ namespace WebApiCrudDatabase.Controllers
 
 
         [HttpGet]
-        [Route("api/engine/get/{Id}")]
+        [Route("api/engine/getbyid")]
         public async Task <HttpResponseMessage> GetEngineByIdAsync(int id)
         {
             
@@ -115,7 +117,7 @@ namespace WebApiCrudDatabase.Controllers
             {
 
                 if (await service.UpdateEngineByIdServiceAsync(id,engine) == true)
-                {iugizgghjvhj
+                {
 
 
                     return Request.CreateResponse(HttpStatusCode.OK, $"Updated!");
